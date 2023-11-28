@@ -30,7 +30,7 @@ func SingleThreadDownload(metadata *ihttp.Metadata) {
 	for {
 		var n, err = resp.Body.Read(buf)
 		total += n
-		fmt.Println(total)
+		// fmt.Println(total)
 		if err == io.EOF {
 			break
 		}

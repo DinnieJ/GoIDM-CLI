@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"installer/common"
 	"installer/downloader"
 	ihttp "installer/http"
 	"io"
@@ -13,17 +14,22 @@ import (
 	"sync"
 	"time"
 
+	"github.com/rivo/tview"
 	"github.com/vbauerster/mpb"
 	"github.com/vbauerster/mpb/decor"
 )
 
 func main() {
-	other()
+	other2()
 	return
 	// testPB()
-	var url string = "http://ipv4.download.thinkbroadband.com/5MB.zip"
+	var url string = "http://ipv4.download.thinkbroadband.com/100MB.zip"
 	var metadata, _ = ihttp.GetMetadata(url)
-	fmt.Printf("Filename:%s\nDownload Size: %.2f MB(s)\n", metadata.FileName, float64(metadata.ContentLength)/(1024*1024))
+	fmt.Printf("Filename:%s\nDownload Size: %.2f MB(s)\nPartial Download: %s\n",
+		metadata.FileName,
+		float64(metadata.ContentLength)/(1024*1024),
+		common.If(metadata.SupportPartial, "Supported", "Not Supported"),
+	)
 
 	if metadata.SupportPartial {
 		fmt.Println("Partial supported, start download using multiple thread")
@@ -53,6 +59,16 @@ func other() {
 	// }
 }
 
+func other2() {
+	// box := tview.NewBox().SetBorder(true).SetTitle("Hello, world!").SetBackgroundColor(tcell.ColorDarkMagenta).SetBorderColor(tcell.Color180)
+	textArea := tview.NewTextArea().
+		SetMaxLength(256).
+		SetPlaceholder("Enter text here").
+		SetBorder(true)
+	if err := tview.NewApplication().SetRoot(textArea, true).Run(); err != nil {
+		panic(err)
+	}
+}
 func mustCopy(dst io.Writer, src io.Reader) {
 	if _, err := io.Copy(dst, src); err != nil {
 		log.Fatal(1)

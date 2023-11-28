@@ -2,6 +2,7 @@ package http
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"path"
 	"strconv"
@@ -30,12 +31,13 @@ func GetMetadata(url string) (Metadata, error) {
 	}
 
 	request.Header.Set("Accept-Ranges", "bytes")
-	request.Header.Set("Range", "bytes=0-100")
+	request.Header.Set("Range", "bytes=0-1023")
+	request.Header.Set("Transfer-Encoding", "chunked")
 
 	var responsePartial, _ = client.Do(request)
 
-	var partialSupported = responsePartial.StatusCode == 200
-
+	var partialSupported = responsePartial.StatusCode == 200 || responsePartial.StatusCode == 206
+	fmt.Printf("%v\n%v\r\n", request, responsePartial)
 	return Metadata{
 		FileName:       path.Base(request.URL.Path),
 		ContentLength:  contentLength,
