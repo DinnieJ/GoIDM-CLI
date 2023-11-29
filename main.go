@@ -23,17 +23,17 @@ func main() {
 	// other2()
 	// return
 	// testPB()
-	var url string = "http://ipv4.download.thinkbroadband.com/100MB.zip"
+	var url string = "http://ipv4.download.thinkbroadband.com/5MB.zip"
 	var metadata, _ = ihttp.GetMetadata(url)
-	fmt.Println(*metadata)
 	fmt.Printf("Filename:%s\nDownload Size: %.2f MB(s)\nPartial Download: %s\n",
 		metadata.FileName,
-		float64(metadata.ContentLength)/(1024*1024),
+		float64(metadata.ContentLength)/(1000*1000),
 		common.If(metadata.SupportPartial, "Supported", "Not Supported"),
 	)
 
 	if metadata.SupportPartial {
 		fmt.Println("Partial supported, start download using multiple thread")
+		downloader.SingleThreadDownload(metadata)
 	} else {
 		fmt.Println("Server not support partial download, start download single thread")
 		downloader.SingleThreadDownload(metadata)
