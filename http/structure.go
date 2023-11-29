@@ -7,3 +7,13 @@ type Metadata struct {
 	Url            string
 	SupportPartial bool
 }
+
+type Dictionary map[string]string
+
+type RequestStruct struct {
+	Url     string
+	Method  string
+	Headers Dictionary
+	Query   Dictionary
+	Body    []byte
+}
